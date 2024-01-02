@@ -9,7 +9,7 @@ ENV UWSGI_THREADS 16
 ENV UWSGI_HARAKIRI 240
 ENV DJANGO_SETTINGS_MODULE 'example.settings'
 
-COPY run_uwsgi.sh run_uwsgi.sh
+COPY uwsgi/run_uwsgi.sh run_uwsgi.sh
 COPY requirements.txt requirements.txt
 COPY uwsgi/uwsgi.ini uwsgi.ini
 
@@ -18,10 +18,12 @@ RUN  mkdir -p /var/www/static/ \
      && mkdir -p /opt/app/static/ \
      && mkdir -p /opt/app/media/ \
      && pip install --upgrade pip \
-     && pip install -r requirements.txt
+     && pip install -r requirements.txt \
+     && chmod +x run_uwsgi.sh
+
 
 COPY . .
 
 EXPOSE 8000
 
-ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
+ENTRYPOINT ["./run_uwsgi.sh"]
